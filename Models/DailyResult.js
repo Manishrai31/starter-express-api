@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const DailyResult = mongoose.Schema(
   {
     newsName:  String, // String is shorthand for {type: String}
+    backgroundColor : String,
+    time: String,
     todayResult : String,
     yesterdayResult : {
         type : String,

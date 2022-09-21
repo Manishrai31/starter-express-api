@@ -9,7 +9,7 @@ app.set('view engine','ejs');
 const QUESTIONS = require('./Models/Questions');
 const path = require('path');
 app.use(express.static(path.resolve(__dirname,'public')));
-
+const LUCKYNUMBER = require('./Models/LuckyNumber');
 // Start File upload management
 const multer = require('multer');
 const fileStorage = multer.diskStorage({
@@ -25,17 +25,28 @@ const upload = multer({ storage: fileStorage })
 
 
 app.get('/', async(req, res) => {
-    const data = new DAILYRESULT({
-        newsName  : "Delhi",
-        todayResult :"33",
-        yesterdayResult: "55"
-    });
-    data.save().then(()=>{
-        console.log("done");
+    // const data = new DAILYRESULT({
+    //     newsName  : "Delhi",
+    //     todayResult :"33",
+    //     yesterdayResult: "55",
+    //     backgroundColor : "#223344",
+    //     time : "5:05"
+    // });
+    // data.save().then(()=>{
+    //     console.log("done");
+    // })
+    // .catch((err)=>{
+    //     console.log(err);
+    // });
+
+    const data = new LUCKYNUMBER({
+        newsName : "Delhi",
+        text : `Huruf :- 11 ,55,77
+        Jodi :- 34, 56,78`
     })
-    .catch((err)=>{
-        console.log(err);
-    });
+    data.save().then(()=>{
+        console.log('done');
+    })
     // console.log(dailyResult);
     // Model.save(data);
     // db.Model.save(data);
@@ -51,7 +62,10 @@ app.get('/todayResult', async(req, res)=>{
     if(result && result.length)
         res.send(result);
 })
-
+app.get('/luckyNumber', async(req, res)=>{
+    const result = await LUCKYNUMBER.find();
+    res.send(result);
+})
 // Import Csv for quizzes
 
 app.get('/uploadExcel', (req, res)=>{
