@@ -76,9 +76,11 @@ app.post('/uploadfile' , upload.single('csvFile'),async (req, res)=>{
     console.log(req.file);
     const jsonObj = await csv().fromFile(req.file.path)
     let value =0;
-    let object= {};
     let finalData =[];
+    // let value = 0;
     jsonObj.forEach((data)=>{
+        let object= {};
+        
         object.question = data.questions;
         object.options = [];
         if(data.option1)
@@ -91,8 +93,14 @@ app.post('/uploadfile' , upload.single('csvFile'),async (req, res)=>{
             object.options.push(data.option4);
         object.rightAnswer = data.rightAnswer;
         object.date = data.date;
+        // console.log("Date printed" + data.date);
+        // value = value +1;
+        // console.log(value);
         finalData.push(object);
+        // console.log(finalData);
+        // console.log("data pushed");
     })
+    // console.log(finalData);
     const result = await QUIZ.insertMany(finalData);
     res.send(result);
    
@@ -100,7 +108,12 @@ app.post('/uploadfile' , upload.single('csvFile'),async (req, res)=>{
 // End Quizzes import process
 
 
+app.get('/getQuestion', async(req, res)=>{
+    const result = await QUIZ.find({date : {$eq : new Date('2022-09-21')}});
+    console.log(result);
+    res.send(result);
+})
+
 app.listen(process.env.PORT || 3000, ()=>{
-    
     console.log("ur app is listening at 3000");
 })
