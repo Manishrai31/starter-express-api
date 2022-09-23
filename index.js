@@ -72,6 +72,9 @@ app.get('/uploadExcel', (req, res)=>{
     res.sendFile(__dirname +"/upload.html");
 })
 
+app.get('/upload', (req, res)=>{
+    res.sendFile(__dirname +"/upload2.html");
+})
 app.post('/uploadfile' , upload.single('csvFile'),async (req, res)=>{
     console.log(req.file);
     const jsonObj = await csv().fromFile(req.file.path)
@@ -105,9 +108,36 @@ app.post('/uploadfile' , upload.single('csvFile'),async (req, res)=>{
     res.send(result);
    
 })
+
+app.post('/uploadQue' , upload.single('csvFile'),async (req, res)=>{
+    console.log(req.file);
+    const jsonObj = await csv().fromFile(req.file.path)
+    let value =0;
+    let finalData =[];
+    // let value = 0;
+    jsonObj.forEach((data)=>{
+        let object= {};
+        object.question = data.question;
+        object.answer = data.answer;
+        object.date = data.date;
+        object.type = data.type;
+        finalData.push(object);
+        // console.log(finalData);
+        // console.log("data pushed");
+    })
+    // console.log(finalData);
+    const result = await QUESTIONS.insertMany(finalData);
+    res.send(result);
+   
+})
 // End Quizzes import process
-
-
+// console.log(new Date());
+app.get('/getQueCards' , async(req, res)=>{
+    let date = new Date('2022-09-22');
+    date = date.toISOString().split('T')[0];
+    const result = await QUESTIONS.find({date : {$eq: date}});
+    res.send(result);
+})
 app.get('/getQuestion', async(req, res)=>{
     const result = await QUIZ.find({date : {$eq : new Date('2022-09-21')}});
     console.log(result);

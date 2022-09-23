@@ -4,6 +4,7 @@ const dailyQuestions = mongoose.Schema(
   {
     question:  String, // String is shorthand for {type: String}
     answer : String,
+    type : String,
     date : Date,
   },
   { timestamps: true }

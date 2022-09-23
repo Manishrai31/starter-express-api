@@ -6,6 +6,7 @@ const dailyQuiz = mongoose.Schema(
     options : [String],
     rightAnswer : String,
     date : Date,
+    type : String
   },
   { timestamps: true }
 );
