@@ -12,6 +12,7 @@ app.use(express.static(path.resolve(__dirname,'public')));
 const LUCKYNUMBER = require('./Models/LuckyNumber');
 // Start File upload management
 const multer = require('multer');
+const reader = require('xlsx')
 const fileStorage = multer.diskStorage({
     destination : (req, res , callback)=>{
         callback(null , './csvSheet');
@@ -130,6 +131,29 @@ app.post('/uploadQue' , upload.single('csvFile'),async (req, res)=>{
     res.send(result);
    
 })
+
+app.post('/uploadQue2' , upload.single('csvFile'),async (req, res)=>{
+    console.log(req.file);
+    const file = reader.readFile(req.file.path);
+    const sheets = file.SheetNames;
+
+    let data=[];
+    for(let i = 0; i < sheets.length; i++)
+    {
+        const temp = reader.utils.sheet_to_json(
+            file.Sheets[file.SheetNames[i]])
+        temp.forEach((res) => {
+            data.push(res)
+        })
+    }
+
+    const result = await QUESTIONS.insertMany(data);
+
+        res.send(result);
+   
+})
+
+
 // End Quizzes import process
 // console.log(new Date());
 app.get('/getQueCards' , async(req, res)=>{
@@ -139,9 +163,46 @@ app.get('/getQueCards' , async(req, res)=>{
     res.send(result);
 })
 app.get('/getQuestion', async(req, res)=>{
-    const result = await QUIZ.find({date : {$eq : new Date('2022-09-21')}});
-    console.log(result);
-    res.send(result);
+    if(req.headers['content-type']==='application/json'){
+        return res.status(200).json({
+            data:'sdd',
+            msg:"Dekho yaar",
+            status:false
+        })
+    }
+    else{
+        return res.status(200).json({
+            data:'sdd',
+            msg:"Dekho yaar",
+            status:false
+        })
+    }
+
+    // const result = await QUIZ.find({date : {$eq : new Date('2022-09-21')}});
+    // res.send(result);
+})
+
+
+app.post('/apiTest', (req, res)=>{
+    console.log(req);
+    res.status(200).json({
+        data: {
+            abc: "abcd"
+        },
+        status: true,
+        msg:"api response"
+    })
+})
+
+app.get('/apiGetTesting', (req, res)=>{
+    console.log(req);
+    res.status(200).json({
+        data: {
+            abc: "abcd"
+        },
+        status: true,
+        msg:"api response"
+    })
 })
 
 app.listen(process.env.PORT || 3000, ()=>{
